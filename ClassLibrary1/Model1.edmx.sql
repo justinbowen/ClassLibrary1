@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 09/24/2013 21:15:21
+-- Date Created: 10/07/2013 19:04:58
 -- Generated from EDMX file: C:\Users\Justin\Documents\Visual Studio 2013\Projects\ClassLibrary1\ClassLibrary1\Model1.edmx
 -- --------------------------------------------------
 
@@ -17,11 +17,29 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_PharmaProduct]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Products] DROP CONSTRAINT [FK_PharmaProduct];
+GO
+IF OBJECT_ID(N'[dbo].[FK_PlanData]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[NCPDP_Data] DROP CONSTRAINT [FK_PlanData];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[Pharmas]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Pharmas];
+GO
+IF OBJECT_ID(N'[dbo].[Products]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Products];
+GO
+IF OBJECT_ID(N'[dbo].[Plans]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Plans];
+GO
+IF OBJECT_ID(N'[dbo].[NCPDP_Data]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[NCPDP_Data];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -36,9 +54,8 @@ GO
 
 -- Creating table 'Products'
 CREATE TABLE [dbo].[Products] (
-    [Id] int IDENTITY(1,1) NOT NULL,
+    [NDC] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(max)  NOT NULL,
-    [NDC] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
     [WAC] decimal(18,0)  NOT NULL,
     [Size] nvarchar(max)  NOT NULL,
@@ -46,38 +63,56 @@ CREATE TABLE [dbo].[Products] (
 );
 GO
 
--- Creating table 'Clients'
-CREATE TABLE [dbo].[Clients] (
+-- Creating table 'Plans'
+CREATE TABLE [dbo].[Plans] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [Name] nvarchar(max)  NOT NULL
+    [Name] nvarchar(max)  NOT NULL,
+    [ContactName] nvarchar(max)  NOT NULL,
+    [Email] nvarchar(max)  NOT NULL
 );
 GO
 
--- Creating table 'RebateTerms'
-CREATE TABLE [dbo].[RebateTerms] (
+-- Creating table 'NCPDP_Data'
+CREATE TABLE [dbo].[NCPDP_Data] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [Qtr] nvarchar(max)  NOT NULL,
-    [Type] nvarchar(max)  NOT NULL,
-    [Admin] float  NULL,
-    [Formulary] float  NULL,
-    [MktShare] nvarchar(max)  NOT NULL,
-    [MSFrom] nvarchar(max)  NOT NULL,
-    [MSTo] nvarchar(max)  NOT NULL,
-    [Access] float  NULL
-);
-GO
-
--- Creating table 'ProductRebateTerm'
-CREATE TABLE [dbo].[ProductRebateTerm] (
-    [Products_Id] int  NOT NULL,
-    [RebateTerms_Id] int  NOT NULL
-);
-GO
-
--- Creating table 'ClientRebateTerm'
-CREATE TABLE [dbo].[ClientRebateTerm] (
-    [Clients_Id] int  NOT NULL,
-    [RebateTerms_Id] int  NOT NULL
+    [SubmissionQtr] nvarchar(max)  NOT NULL,
+    [DataLevel] nchar(2)  NOT NULL,
+    [PlanIDQualifier] nchar(2)  NULL,
+    [PlanIDCode] nchar(17)  NULL,
+    [PlanName] nchar(30)  NULL,
+    [ServiceProviderIDQualifier] nchar(2)  NULL,
+    [ServiceProviderID] nchar(15)  NULL,
+    [PharmacyServiceType] nchar(2)  NULL,
+    [ProductIDQualifier] nchar(2)  NOT NULL,
+    [ProductID] nchar(19)  NOT NULL,
+    [ProductDescription] nchar(30)  NULL,
+    [DAW] nchar(1)  NULL,
+    [TotalQuantity] nchar(15)  NULL,
+    [UnitofMeasure] nvarchar(max)  NULL,
+    [Filler1] nchar(8)  NULL,
+    [RebateDaysSupply] nchar(4)  NULL,
+    [PrescriptionType] nchar(2)  NULL,
+    [TotalNumberofPresciptions] nchar(8)  NOT NULL,
+    [PrescriptionNumberQualifier] nchar(1)  NULL,
+    [PrescriptionNumber] nchar(12)  NULL,
+    [DateofService] nchar(8)  NULL,
+    [TherapeuticClassCodeQualifier] nchar(1)  NULL,
+    [TherapeuticClassCode] nchar(17)  NULL,
+    [TherapeuticClassDescription] nchar(30)  NULL,
+    [ReimbursementQualifier] nchar(2)  NULL,
+    [ReimbursementAmount] nchar(12)  NULL,
+    [ReimbursementDate] nchar(12)  NULL,
+    [PatientLiability] nchar(12)  NOT NULL,
+    [FillNumber] nvarchar(max)  NOT NULL,
+    [RecordPurposeIndicator] nvarchar(max)  NOT NULL,
+    [RebatePerUnitAmount] nvarchar(max)  NOT NULL,
+    [RequestedRebateAmount] nvarchar(max)  NOT NULL,
+    [PrescriberIDQualifier] nvarchar(max)  NOT NULL,
+    [PrescriberID] nvarchar(max)  NOT NULL,
+    [ClaimNumber] nvarchar(max)  NOT NULL,
+    [ProductNDC] int  NOT NULL,
+    [PlanId1] int  NOT NULL,
+    [PlanId] int  NOT NULL
 );
 GO
 
@@ -91,34 +126,22 @@ ADD CONSTRAINT [PK_Pharmas]
     PRIMARY KEY CLUSTERED ([PharmaId] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Products'
+-- Creating primary key on [NDC] in table 'Products'
 ALTER TABLE [dbo].[Products]
 ADD CONSTRAINT [PK_Products]
+    PRIMARY KEY CLUSTERED ([NDC] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Plans'
+ALTER TABLE [dbo].[Plans]
+ADD CONSTRAINT [PK_Plans]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Clients'
-ALTER TABLE [dbo].[Clients]
-ADD CONSTRAINT [PK_Clients]
+-- Creating primary key on [Id] in table 'NCPDP_Data'
+ALTER TABLE [dbo].[NCPDP_Data]
+ADD CONSTRAINT [PK_NCPDP_Data]
     PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'RebateTerms'
-ALTER TABLE [dbo].[RebateTerms]
-ADD CONSTRAINT [PK_RebateTerms]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Products_Id], [RebateTerms_Id] in table 'ProductRebateTerm'
-ALTER TABLE [dbo].[ProductRebateTerm]
-ADD CONSTRAINT [PK_ProductRebateTerm]
-    PRIMARY KEY CLUSTERED ([Products_Id], [RebateTerms_Id] ASC);
-GO
-
--- Creating primary key on [Clients_Id], [RebateTerms_Id] in table 'ClientRebateTerm'
-ALTER TABLE [dbo].[ClientRebateTerm]
-ADD CONSTRAINT [PK_ClientRebateTerm]
-    PRIMARY KEY CLUSTERED ([Clients_Id], [RebateTerms_Id] ASC);
 GO
 
 -- --------------------------------------------------
@@ -139,50 +162,32 @@ ON [dbo].[Products]
     ([PharmaId]);
 GO
 
--- Creating foreign key on [Products_Id] in table 'ProductRebateTerm'
-ALTER TABLE [dbo].[ProductRebateTerm]
-ADD CONSTRAINT [FK_ProductRebateTerm_Product]
-    FOREIGN KEY ([Products_Id])
+-- Creating foreign key on [ProductNDC] in table 'NCPDP_Data'
+ALTER TABLE [dbo].[NCPDP_Data]
+ADD CONSTRAINT [FK_ProductData]
+    FOREIGN KEY ([ProductNDC])
     REFERENCES [dbo].[Products]
-        ([Id])
+        ([NDC])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ProductData'
+CREATE INDEX [IX_FK_ProductData]
+ON [dbo].[NCPDP_Data]
+    ([ProductNDC]);
 GO
 
--- Creating foreign key on [RebateTerms_Id] in table 'ProductRebateTerm'
-ALTER TABLE [dbo].[ProductRebateTerm]
-ADD CONSTRAINT [FK_ProductRebateTerm_RebateTerm]
-    FOREIGN KEY ([RebateTerms_Id])
-    REFERENCES [dbo].[RebateTerms]
+-- Creating foreign key on [PlanId] in table 'NCPDP_Data'
+ALTER TABLE [dbo].[NCPDP_Data]
+ADD CONSTRAINT [FK_PlanData]
+    FOREIGN KEY ([PlanId])
+    REFERENCES [dbo].[Plans]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
--- Creating non-clustered index for FOREIGN KEY 'FK_ProductRebateTerm_RebateTerm'
-CREATE INDEX [IX_FK_ProductRebateTerm_RebateTerm]
-ON [dbo].[ProductRebateTerm]
-    ([RebateTerms_Id]);
-GO
-
--- Creating foreign key on [Clients_Id] in table 'ClientRebateTerm'
-ALTER TABLE [dbo].[ClientRebateTerm]
-ADD CONSTRAINT [FK_ClientRebateTerm_Client]
-    FOREIGN KEY ([Clients_Id])
-    REFERENCES [dbo].[Clients]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating foreign key on [RebateTerms_Id] in table 'ClientRebateTerm'
-ALTER TABLE [dbo].[ClientRebateTerm]
-ADD CONSTRAINT [FK_ClientRebateTerm_RebateTerm]
-    FOREIGN KEY ([RebateTerms_Id])
-    REFERENCES [dbo].[RebateTerms]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ClientRebateTerm_RebateTerm'
-CREATE INDEX [IX_FK_ClientRebateTerm_RebateTerm]
-ON [dbo].[ClientRebateTerm]
-    ([RebateTerms_Id]);
+-- Creating non-clustered index for FOREIGN KEY 'FK_PlanData'
+CREATE INDEX [IX_FK_PlanData]
+ON [dbo].[NCPDP_Data]
+    ([PlanId]);
 GO
 
 -- --------------------------------------------------

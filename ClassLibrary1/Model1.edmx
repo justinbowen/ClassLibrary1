@@ -4,21 +4,127 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="Model1.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
-        <EntityContainer Name="Model1TargetContainer" >
-        </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+    <Schema Namespace="Model1.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="Model1StoreContainer">
+    <EntitySet Name="Pharmas" EntityType="Model1.Store.Pharmas" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Products" EntityType="Model1.Store.Products" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Plans" EntityType="Model1.Store.Plans" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="NCPDP_Data" EntityType="Model1.Store.NCPDP_Data" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="PharmaProduct" Association="Model1.Store.PharmaProduct">
+      <End Role="Pharma" EntitySet="Pharmas" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="PlanData" Association="Model1.Store.PlanData">
+      <End Role="Plan" EntitySet="Plans" />
+      <End Role="Data" EntitySet="NCPDP_Data" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Pharmas">
+    <Key>
+      <PropertyRef Name="PharmaId" />
+    </Key>
+    <Property Name="PharmaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Products">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NDC" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="WAC" Type="decimal" Nullable="false" />
+    <Property Name="Size" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PharmaId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Plans">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="NCPDP_Data">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SubmissionQtr" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PlanId" Type="int" Nullable="false" />
+    <Property Name="RecordType" Type="nchar" Nullable="false" MaxLength="2" />
+    <Property Name="LineNumber" Type="nchar" Nullable="false" MaxLength="11" />
+    <Property Name="DataLevel" Type="nchar" Nullable="false" MaxLength="2" />
+    <Property Name="PlanIDQualifier" Type="nchar" Nullable="true" MaxLength="2" />
+    <Property Name="PlanIDCode" Type="nchar" Nullable="true" MaxLength="17" />
+    <Property Name="PlanName" Type="nchar" Nullable="true" MaxLength="30" />
+    <Property Name="ServiceProviderIDQualifier" Type="nchar" Nullable="true" MaxLength="2" />
+    <Property Name="ServiceProviderID" Type="nchar" Nullable="true" MaxLength="15" />
+    <Property Name="EntityZipCode" Type="nchar" Nullable="true" MaxLength="15" />
+    <Property Name="PharmacyServiceType" Type="nchar" Nullable="true" MaxLength="2" />
+    <Property Name="ProductIDQualifier" Type="nchar" Nullable="false" MaxLength="2" />
+    <Property Name="ProductID" Type="nchar" Nullable="false" MaxLength="19" />
+    <Property Name="ProductDescription" Type="nchar" Nullable="true" MaxLength="30" />
+    <Property Name="DAW" Type="nchar" Nullable="true" MaxLength="1" />
+    <Property Name="TotalQuantity" Type="nchar" Nullable="true" MaxLength="15" />
+    <Property Name="UnitofMeasure" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Filler1" Type="nchar" Nullable="true" MaxLength="8" />
+    <Property Name="RebateDaysSupply" Type="nchar" Nullable="true" MaxLength="4" />
+    <Property Name="PrescriptionType" Type="nchar" Nullable="true" MaxLength="2" />
+    <Property Name="TotalNumberofPresciptions" Type="nchar" Nullable="false" MaxLength="8" />
+    <Property Name="PrescriptionNumberQualifier" Type="nchar" Nullable="true" MaxLength="1" />
+    <Property Name="PrescriptionNumber" Type="nchar" Nullable="true" MaxLength="12" />
+    <Property Name="DateofService" Type="nchar" Nullable="true" MaxLength="8" />
+    <Property Name="TherapeuticClassCodeQualifier" Type="nchar" Nullable="true" MaxLength="1" />
+    <Property Name="TherapeuticClassCode" Type="nchar" Nullable="true" MaxLength="17" />
+    <Property Name="TherapeuticClassDescription" Type="nchar" Nullable="true" MaxLength="30" />
+    <Property Name="ReimbursementQualifier" Type="nchar" Nullable="true" MaxLength="2" />
+    <Property Name="ReimbursementAmount" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="PharmaProduct">
+    <End Role="Pharma" Type="Model1.Store.Pharmas" Multiplicity="1" />
+    <End Role="Product" Type="Model1.Store.Products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pharma">
+        <PropertyRef Name="PharmaId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="PharmaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="PlanData">
+    <End Role="Plan" Type="Model1.Store.Plans" Multiplicity="1" />
+    <End Role="Data" Type="Model1.Store.NCPDP_Data" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Plan">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Data">
+        <PropertyRef Name="PlanId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model1" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
         <EntityContainer Name="Model1Container" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Pharmas" EntityType="Model1.Pharma" />
           <EntitySet Name="Products" EntityType="Model1.Product" />
-          <EntitySet Name="RebateTerms" EntityType="Model1.RebateTerm" />
           <AssociationSet Name="PharmaProduct" Association="Model1.PharmaProduct">
             <End Role="Pharma" EntitySet="Pharmas" />
             <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <EntitySet Name="Plans" EntityType="Model1.Plan" />
+          <EntitySet Name="NCPDP_Data" EntityType="Model1.NCPDP_Data" />
+          <AssociationSet Name="ProductData" Association="Model1.ProductData">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="NCPDP_Data" EntitySet="NCPDP_Data" />
+          </AssociationSet>
+          <AssociationSet Name="PlanData" Association="Model1.PlanData">
+            <End Role="Plan" EntitySet="Plans" />
+            <End Role="NCPDP_Data" EntitySet="NCPDP_Data" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Pharma">
@@ -26,27 +132,21 @@
             <PropertyRef Name="PharmaId" />
           </Key>
           <Property Name="PharmaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Name" Nullable="false" Type="String" />
           <NavigationProperty Name="Products" Relationship="Model1.PharmaProduct" FromRole="Pharma" ToRole="Product" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="NDC" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NDC" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="NDC" Type="String" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="false" />
           <Property Name="WAC" Type="Decimal" Nullable="false" />
           <Property Name="Size" Type="String" Nullable="false" />
           <NavigationProperty Name="Pharma" Relationship="Model1.PharmaProduct" FromRole="Product" ToRole="Pharma" />
           <Property Name="PharmaId" Type="Int32" Nullable="false" />
-        </EntityType>
-        <EntityType Name="RebateTerm">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="NCPDP_Data" Relationship="Model1.ProductData" FromRole="Product" ToRole="NCPDP_Data" />
         </EntityType>
         <Association Name="PharmaProduct">
           <End Type="Model1.Pharma" Role="Pharma" Multiplicity="1" />
@@ -60,17 +160,155 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Plan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="ContactName" Type="String" Nullable="false" />
+          <Property Name="Email" Type="String" Nullable="false" />
+          <NavigationProperty Name="NCPDP_Data" Relationship="Model1.PlanData" FromRole="Plan" ToRole="NCPDP_Data" />
+        </EntityType>
+        <EntityType Name="NCPDP_Data">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubmissionQtr" Type="String" Nullable="false" />
+          <Property Name="DataLevel" Type="String" Nullable="false" FixedLength="true" MaxLength="2" />
+          <Property Name="PlanIDQualifier" Type="String" Nullable="true" FixedLength="true" MaxLength="2" />
+          <Property Name="PlanIDCode" Type="String" Nullable="true" FixedLength="true" MaxLength="17" />
+          <Property Name="PlanName" Type="String" Nullable="true" FixedLength="true" MaxLength="30" />
+          <Property Name="ServiceProviderIDQualifier" Type="String" Nullable="true" FixedLength="true" MaxLength="2" />
+          <Property Name="ServiceProviderID" Type="String" Nullable="true" FixedLength="true" MaxLength="15" />
+          <Property Name="PharmacyServiceType" Type="String" Nullable="true" FixedLength="true" MaxLength="2" />
+          <Property Name="ProductIDQualifier" Type="String" Nullable="false" FixedLength="true" MaxLength="2" />
+          <Property Name="ProductID" Type="String" Nullable="false" FixedLength="true" MaxLength="19" />
+          <Property Name="ProductDescription" Type="String" Nullable="true" FixedLength="true" MaxLength="30" />
+          <Property Name="DAW" Type="String" Nullable="true" FixedLength="true" MaxLength="1" />
+          <Property Name="TotalQuantity" Type="String" Nullable="true" FixedLength="true" MaxLength="15" />
+          <Property Name="UnitofMeasure" Type="String" Nullable="true" />
+          <Property Name="Filler1" Type="String" Nullable="true" FixedLength="true" MaxLength="8" />
+          <Property Name="RebateDaysSupply" Type="String" FixedLength="true" MaxLength="4" Nullable="true" />
+          <Property Name="PrescriptionType" Type="String" FixedLength="true" MaxLength="2" Nullable="true" />
+          <Property Name="TotalNumberofPresciptions" Type="String" FixedLength="true" MaxLength="8" Nullable="false" />
+          <Property Name="PrescriptionNumberQualifier" Type="String" FixedLength="true" MaxLength="1" Nullable="true" />
+          <Property Name="PrescriptionNumber" Type="String" FixedLength="true" MaxLength="12" Nullable="true" />
+          <Property Name="DateofService" Type="String" FixedLength="true" MaxLength="8" Nullable="true" />
+          <Property Name="TherapeuticClassCodeQualifier" Type="String" Nullable="true" FixedLength="true" MaxLength="1" />
+          <Property Name="TherapeuticClassCode" Type="String" FixedLength="true" MaxLength="17" />
+          <Property Name="TherapeuticClassDescription" Type="String" FixedLength="true" MaxLength="30" />
+          <Property Name="ReimbursementQualifier" Type="String" FixedLength="true" MaxLength="2" />
+          <Property Name="ReimbursementAmount" Type="String" FixedLength="true" MaxLength="12" />
+          <Property Name="ReimbursementDate" Type="String" FixedLength="true" MaxLength="12" />
+          <Property Name="PatientLiability" Type="String" Nullable="false" FixedLength="true" MaxLength="12" />
+          <Property Name="FillNumber" Type="String" Nullable="false" />
+          <Property Name="RecordPurposeIndicator" Type="String" Nullable="false" />
+          <Property Name="RebatePerUnitAmount" Type="String" Nullable="false" />
+          <Property Name="RequestedRebateAmount" Type="String" Nullable="false" />
+          <Property Name="PrescriberIDQualifier" Type="String" Nullable="false" />
+          <Property Name="PrescriberID" Type="String" Nullable="false" />
+          <Property Name="ClaimNumber" Type="String" Nullable="false" />
+          <NavigationProperty Name="Product" Relationship="Model1.ProductData" FromRole="NCPDP_Data" ToRole="Product" />
+          <Property Name="ProductNDC" Type="Int32" Nullable="false" />
+          <Property Name="PlanId1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Plan" Relationship="Model1.PlanData" FromRole="NCPDP_Data" ToRole="Plan" />
+          <Property Name="PlanId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="ProductData">
+          <End Type="Model1.Product" Role="Product" Multiplicity="1" />
+          <End Type="Model1.NCPDP_Data" Role="NCPDP_Data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="NDC" />
+            </Principal>
+            <Dependent Role="NCPDP_Data">
+              <PropertyRef Name="ProductNDC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PlanData">
+          <End Type="Model1.Plan" Role="Plan" Multiplicity="1" />
+          <End Type="Model1.NCPDP_Data" Role="NCPDP_Data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plan">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="NCPDP_Data">
+              <PropertyRef Name="PlanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
-        <Alias Key="Model" Value="Model1" />
-        <Alias Key="Target" Value="Model1.Store" />
-        <EntityContainerMapping CdmEntityContainer="Model1Container" StorageEntityContainer="Model1TargetContainer">
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Model1StoreContainer" CdmEntityContainer="Model1Container">
+    <EntitySetMapping Name="Pharmas">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Pharma)">
+        <MappingFragment StoreEntitySet="Pharmas">
+          <ScalarProperty Name="PharmaId" ColumnName="PharmaId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Products">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Product)">
+        <MappingFragment StoreEntitySet="Products">
+          <ScalarProperty Name="NDC" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="WAC" ColumnName="WAC" />
+          <ScalarProperty Name="Size" ColumnName="Size" />
+          <ScalarProperty Name="PharmaId" ColumnName="PharmaId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Plans">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Plan)">
+        <MappingFragment StoreEntitySet="Plans">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="NCPDP_Data">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.NCPDP_Data)">
+        <MappingFragment StoreEntitySet="NCPDP_Data">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="SubmissionQtr" ColumnName="SubmissionQtr" />
+          <ScalarProperty Name="DataLevel" ColumnName="DataLevel" />
+          <ScalarProperty Name="PlanIDQualifier" ColumnName="PlanIDQualifier" />
+          <ScalarProperty Name="PlanIDCode" ColumnName="PlanIDCode" />
+          <ScalarProperty Name="PlanName" ColumnName="PlanName" />
+          <ScalarProperty Name="ServiceProviderIDQualifier" ColumnName="ServiceProviderIDQualifier" />
+          <ScalarProperty Name="ServiceProviderID" ColumnName="ServiceProviderID" />
+          <ScalarProperty Name="PharmacyServiceType" ColumnName="PharmacyServiceType" />
+          <ScalarProperty Name="ProductIDQualifier" ColumnName="ProductIDQualifier" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="ProductDescription" ColumnName="ProductDescription" />
+          <ScalarProperty Name="DAW" ColumnName="DAW" />
+          <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+          <ScalarProperty Name="UnitofMeasure" ColumnName="UnitofMeasure" />
+          <ScalarProperty Name="Filler1" ColumnName="Filler1" />
+          <ScalarProperty Name="RebateDaysSupply" ColumnName="RebateDaysSupply" />
+          <ScalarProperty Name="PrescriptionType" ColumnName="PrescriptionType" />
+          <ScalarProperty Name="TotalNumberofPresciptions" ColumnName="TotalNumberofPresciptions" />
+          <ScalarProperty Name="PrescriptionNumberQualifier" ColumnName="PrescriptionNumberQualifier" />
+          <ScalarProperty Name="PrescriptionNumber" ColumnName="PrescriptionNumber" />
+          <ScalarProperty Name="DateofService" ColumnName="DateofService" />
+          <ScalarProperty Name="TherapeuticClassCodeQualifier" ColumnName="TherapeuticClassCodeQualifier" />
+          <ScalarProperty Name="TherapeuticClassCode" ColumnName="TherapeuticClassCode" />
+          <ScalarProperty Name="TherapeuticClassDescription" ColumnName="TherapeuticClassDescription" />
+          <ScalarProperty Name="ReimbursementQualifier" ColumnName="ReimbursementQualifier" />
+          <ScalarProperty Name="ReimbursementAmount" ColumnName="ReimbursementAmount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -84,6 +322,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->

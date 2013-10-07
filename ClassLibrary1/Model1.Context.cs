@@ -27,6 +27,7 @@ namespace ClassLibrary1
     
         public virtual DbSet<Pharma> Pharmas { get; set; }
         public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<RebateTerm> RebateTerms { get; set; }
+        public virtual DbSet<Plan> Plans { get; set; }
+        public virtual DbSet<NCPDP_Data> NCPDP_Data { get; set; }
     }
 }

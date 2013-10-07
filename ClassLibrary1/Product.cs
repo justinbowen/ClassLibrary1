@@ -14,14 +14,19 @@ namespace ClassLibrary1
     
     public partial class Product
     {
-        public int Id { get; set; }
+        public Product()
+        {
+            this.NCPDP_Data = new HashSet<NCPDP_Data>();
+        }
+    
+        public int NDC { get; set; }
         public string Name { get; set; }
-        public string NDC { get; set; }
         public string Description { get; set; }
         public decimal WAC { get; set; }
         public string Size { get; set; }
         public int PharmaId { get; set; }
     
         public virtual Pharma Pharma { get; set; }
+        public virtual ICollection<NCPDP_Data> NCPDP_Data { get; set; }
     }
 }

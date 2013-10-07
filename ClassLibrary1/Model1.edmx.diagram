@@ -6,12 +6,12 @@
     <edmx:Diagrams>
       <Diagram DiagramId="23f9585945fa4246ada103d6a9c39200" Name="Diagram1" >
         <EntityTypeShape EntityType="Model1.Pharma" Width="1.5" PointX="0.5" PointY="0.5" />
-        <EntityTypeShape EntityType="Model1.Product" Width="1.5" PointX="2.625" PointY="0.5" />
+        <EntityTypeShape EntityType="Model1.Product" Width="1.5" PointX="4.875" PointY="0.5" />
         <AssociationConnector Association="Model1.PharmaProduct" />
-        <EntityTypeShape EntityType="Model1.Client" Width="1.5" PointX="0.625" PointY="3.125" />
-        <EntityTypeShape EntityType="Model1.RebateTerm" Width="1.5" PointX="4.875" PointY="0.5" />
-        <AssociationConnector Association="Model1.ProductRebateTerm" />
-        <AssociationConnector Association="Model1.ClientRebateTerm" />
+        <EntityTypeShape EntityType="Model1.Plan" Width="1.5" PointX="4.875" PointY="3.5" />
+        <EntityTypeShape EntityType="Model1.NCPDP_Data" Width="2.75" PointX="7.25" PointY="0.625" />
+        <AssociationConnector Association="Model1.ProductData" />
+        <AssociationConnector Association="Model1.PlanData" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
