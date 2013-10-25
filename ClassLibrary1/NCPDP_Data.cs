@@ -18,7 +18,6 @@ namespace ClassLibrary1
         public string SubmissionQtr { get; set; }
         public string DataLevel { get; set; }
         public string PlanIDQualifier { get; set; }
-        public string PlanIDCode { get; set; }
         public string PlanName { get; set; }
         public string ServiceProviderIDQualifier { get; set; }
         public string ServiceProviderID { get; set; }
@@ -51,8 +50,7 @@ namespace ClassLibrary1
         public string PrescriberID { get; set; }
         public string ClaimNumber { get; set; }
         public int ProductNDC { get; set; }
-        public int PlanId1 { get; set; }
-        public int PlanId { get; set; }
+        public int PlanIdCode { get; set; }
     
         public virtual Product Product { get; set; }
         public virtual Plan Plan { get; set; }

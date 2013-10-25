@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 10/07/2013 19:04:58
+-- Date Created: 10/24/2013 22:34:04
 -- Generated from EDMX file: C:\Users\Justin\Documents\Visual Studio 2013\Projects\ClassLibrary1\ClassLibrary1\Model1.edmx
 -- --------------------------------------------------
 
@@ -19,6 +19,9 @@ GO
 
 IF OBJECT_ID(N'[dbo].[FK_PharmaProduct]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Products] DROP CONSTRAINT [FK_PharmaProduct];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ProductData]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[NCPDP_Data] DROP CONSTRAINT [FK_ProductData];
 GO
 IF OBJECT_ID(N'[dbo].[FK_PlanData]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[NCPDP_Data] DROP CONSTRAINT [FK_PlanData];
@@ -78,8 +81,7 @@ CREATE TABLE [dbo].[NCPDP_Data] (
     [SubmissionQtr] nvarchar(max)  NOT NULL,
     [DataLevel] nchar(2)  NOT NULL,
     [PlanIDQualifier] nchar(2)  NULL,
-    [PlanIDCode] nchar(17)  NULL,
-    [PlanName] nchar(30)  NULL,
+    [PlanName] nchar(30)  NOT NULL,
     [ServiceProviderIDQualifier] nchar(2)  NULL,
     [ServiceProviderID] nchar(15)  NULL,
     [PharmacyServiceType] nchar(2)  NULL,
@@ -111,8 +113,7 @@ CREATE TABLE [dbo].[NCPDP_Data] (
     [PrescriberID] nvarchar(max)  NOT NULL,
     [ClaimNumber] nvarchar(max)  NOT NULL,
     [ProductNDC] int  NOT NULL,
-    [PlanId1] int  NOT NULL,
-    [PlanId] int  NOT NULL
+    [PlanIdCode] int  NOT NULL
 );
 GO
 
@@ -176,10 +177,10 @@ ON [dbo].[NCPDP_Data]
     ([ProductNDC]);
 GO
 
--- Creating foreign key on [PlanId] in table 'NCPDP_Data'
+-- Creating foreign key on [PlanIdCode] in table 'NCPDP_Data'
 ALTER TABLE [dbo].[NCPDP_Data]
 ADD CONSTRAINT [FK_PlanData]
-    FOREIGN KEY ([PlanId])
+    FOREIGN KEY ([PlanIdCode])
     REFERENCES [dbo].[Plans]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -187,7 +188,7 @@ ADD CONSTRAINT [FK_PlanData]
 -- Creating non-clustered index for FOREIGN KEY 'FK_PlanData'
 CREATE INDEX [IX_FK_PlanData]
 ON [dbo].[NCPDP_Data]
-    ([PlanId]);
+    ([PlanIdCode]);
 GO
 
 -- --------------------------------------------------

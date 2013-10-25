@@ -14,9 +14,13 @@
       <End Role="Pharma" EntitySet="Pharmas" />
       <End Role="Product" EntitySet="Products" />
     </AssociationSet>
+    <AssociationSet Name="ProductData" Association="Model1.Store.ProductData">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="NCPDP_Data" EntitySet="NCPDP_Data" />
+    </AssociationSet>
     <AssociationSet Name="PlanData" Association="Model1.Store.PlanData">
       <End Role="Plan" EntitySet="Plans" />
-      <End Role="Data" EntitySet="NCPDP_Data" />
+      <End Role="NCPDP_Data" EntitySet="NCPDP_Data" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Pharmas">
@@ -28,11 +32,10 @@
   </EntityType>
   <EntityType Name="Products">
     <Key>
-      <PropertyRef Name="Id" />
+      <PropertyRef Name="NDC" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NDC" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="NDC" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="WAC" Type="decimal" Nullable="false" />
     <Property Name="Size" Type="nvarchar(max)" Nullable="false" />
@@ -44,6 +47,8 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ContactName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="NCPDP_Data">
     <Key>
@@ -51,16 +56,11 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="SubmissionQtr" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="PlanId" Type="int" Nullable="false" />
-    <Property Name="RecordType" Type="nchar" Nullable="false" MaxLength="2" />
-    <Property Name="LineNumber" Type="nchar" Nullable="false" MaxLength="11" />
     <Property Name="DataLevel" Type="nchar" Nullable="false" MaxLength="2" />
     <Property Name="PlanIDQualifier" Type="nchar" Nullable="true" MaxLength="2" />
-    <Property Name="PlanIDCode" Type="nchar" Nullable="true" MaxLength="17" />
-    <Property Name="PlanName" Type="nchar" Nullable="true" MaxLength="30" />
+    <Property Name="PlanName" Type="nchar" Nullable="false" MaxLength="30" />
     <Property Name="ServiceProviderIDQualifier" Type="nchar" Nullable="true" MaxLength="2" />
     <Property Name="ServiceProviderID" Type="nchar" Nullable="true" MaxLength="15" />
-    <Property Name="EntityZipCode" Type="nchar" Nullable="true" MaxLength="15" />
     <Property Name="PharmacyServiceType" Type="nchar" Nullable="true" MaxLength="2" />
     <Property Name="ProductIDQualifier" Type="nchar" Nullable="false" MaxLength="2" />
     <Property Name="ProductID" Type="nchar" Nullable="false" MaxLength="19" />
@@ -79,7 +79,18 @@
     <Property Name="TherapeuticClassCode" Type="nchar" Nullable="true" MaxLength="17" />
     <Property Name="TherapeuticClassDescription" Type="nchar" Nullable="true" MaxLength="30" />
     <Property Name="ReimbursementQualifier" Type="nchar" Nullable="true" MaxLength="2" />
-    <Property Name="ReimbursementAmount" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ReimbursementAmount" Type="nchar" Nullable="true" MaxLength="12" />
+    <Property Name="ReimbursementDate" Type="nchar" Nullable="true" MaxLength="12" />
+    <Property Name="PatientLiability" Type="nchar" Nullable="false" MaxLength="12" />
+    <Property Name="FillNumber" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RecordPurposeIndicator" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RebatePerUnitAmount" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RequestedRebateAmount" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PrescriberIDQualifier" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PrescriberID" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ClaimNumber" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ProductNDC" Type="int" Nullable="false" />
+    <Property Name="PlanIdCode" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="PharmaProduct">
     <End Role="Pharma" Type="Model1.Store.Pharmas" Multiplicity="1" />
@@ -93,15 +104,27 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="ProductData">
+    <End Role="Product" Type="Model1.Store.Products" Multiplicity="1" />
+    <End Role="NCPDP_Data" Type="Model1.Store.NCPDP_Data" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="NDC" />
+      </Principal>
+      <Dependent Role="NCPDP_Data">
+        <PropertyRef Name="ProductNDC" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="PlanData">
     <End Role="Plan" Type="Model1.Store.Plans" Multiplicity="1" />
-    <End Role="Data" Type="Model1.Store.NCPDP_Data" Multiplicity="*" />
+    <End Role="NCPDP_Data" Type="Model1.Store.NCPDP_Data" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Plan">
         <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="Data">
-        <PropertyRef Name="PlanId" />
+      <Dependent Role="NCPDP_Data">
+        <PropertyRef Name="PlanIdCode" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -178,8 +201,7 @@
           <Property Name="SubmissionQtr" Type="String" Nullable="false" />
           <Property Name="DataLevel" Type="String" Nullable="false" FixedLength="true" MaxLength="2" />
           <Property Name="PlanIDQualifier" Type="String" Nullable="true" FixedLength="true" MaxLength="2" />
-          <Property Name="PlanIDCode" Type="String" Nullable="true" FixedLength="true" MaxLength="17" />
-          <Property Name="PlanName" Type="String" Nullable="true" FixedLength="true" MaxLength="30" />
+          <Property Name="PlanName" Type="String" Nullable="false" FixedLength="true" MaxLength="30" />
           <Property Name="ServiceProviderIDQualifier" Type="String" Nullable="true" FixedLength="true" MaxLength="2" />
           <Property Name="ServiceProviderID" Type="String" Nullable="true" FixedLength="true" MaxLength="15" />
           <Property Name="PharmacyServiceType" Type="String" Nullable="true" FixedLength="true" MaxLength="2" />
@@ -212,9 +234,8 @@
           <Property Name="ClaimNumber" Type="String" Nullable="false" />
           <NavigationProperty Name="Product" Relationship="Model1.ProductData" FromRole="NCPDP_Data" ToRole="Product" />
           <Property Name="ProductNDC" Type="Int32" Nullable="false" />
-          <Property Name="PlanId1" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Plan" Relationship="Model1.PlanData" FromRole="NCPDP_Data" ToRole="Plan" />
-          <Property Name="PlanId" Type="Int32" Nullable="false" />
+          <Property Name="PlanIdCode" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="ProductData">
           <End Type="Model1.Product" Role="Product" Multiplicity="1" />
@@ -236,7 +257,7 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="NCPDP_Data">
-              <PropertyRef Name="PlanId" />
+              <PropertyRef Name="PlanIdCode" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -257,7 +278,7 @@
     <EntitySetMapping Name="Products">
       <EntityTypeMapping TypeName="IsTypeOf(Model1.Product)">
         <MappingFragment StoreEntitySet="Products">
-          <ScalarProperty Name="NDC" ColumnName="Id" />
+          <ScalarProperty Name="NDC" ColumnName="NDC" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="WAC" ColumnName="WAC" />
@@ -271,6 +292,8 @@
         <MappingFragment StoreEntitySet="Plans">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -281,7 +304,6 @@
           <ScalarProperty Name="SubmissionQtr" ColumnName="SubmissionQtr" />
           <ScalarProperty Name="DataLevel" ColumnName="DataLevel" />
           <ScalarProperty Name="PlanIDQualifier" ColumnName="PlanIDQualifier" />
-          <ScalarProperty Name="PlanIDCode" ColumnName="PlanIDCode" />
           <ScalarProperty Name="PlanName" ColumnName="PlanName" />
           <ScalarProperty Name="ServiceProviderIDQualifier" ColumnName="ServiceProviderIDQualifier" />
           <ScalarProperty Name="ServiceProviderID" ColumnName="ServiceProviderID" />
@@ -304,6 +326,17 @@
           <ScalarProperty Name="TherapeuticClassDescription" ColumnName="TherapeuticClassDescription" />
           <ScalarProperty Name="ReimbursementQualifier" ColumnName="ReimbursementQualifier" />
           <ScalarProperty Name="ReimbursementAmount" ColumnName="ReimbursementAmount" />
+          <ScalarProperty Name="ReimbursementDate" ColumnName="ReimbursementDate" />
+          <ScalarProperty Name="PatientLiability" ColumnName="PatientLiability" />
+          <ScalarProperty Name="FillNumber" ColumnName="FillNumber" />
+          <ScalarProperty Name="RecordPurposeIndicator" ColumnName="RecordPurposeIndicator" />
+          <ScalarProperty Name="RebatePerUnitAmount" ColumnName="RebatePerUnitAmount" />
+          <ScalarProperty Name="RequestedRebateAmount" ColumnName="RequestedRebateAmount" />
+          <ScalarProperty Name="PrescriberIDQualifier" ColumnName="PrescriberIDQualifier" />
+          <ScalarProperty Name="PrescriberID" ColumnName="PrescriberID" />
+          <ScalarProperty Name="ClaimNumber" ColumnName="ClaimNumber" />
+          <ScalarProperty Name="ProductNDC" ColumnName="ProductNDC" />
+          <ScalarProperty Name="PlanIdCode" ColumnName="PlanIdCode" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
